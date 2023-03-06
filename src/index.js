@@ -1,26 +1,45 @@
+//import modules
 const {Project} = require('./addProject.js');
 
-const mainSection = document.getElementById('mainSection');
+//get elements from DOM
 const addProject = document.getElementById('addProject');
+const container = document.getElementById('container');
+const projectLink = document.getElementsByClassName('projectLink');
 
-//name project on click
+//hold projects in list
+const projectList = [];
 
+//sidebar
+//add project button 
 addProject.addEventListener('click', function(){
-    if (addProject.children.length === 0) {
-        addProject.textContent = "";
-        const addProjectNameInput = document.createElement('input');
-        addProjectNameInput.type = 'text';
-        const addProjectBtn = document.createElement('button');
-        addProjectBtn.textContent = 'Add';
-        addProject.appendChild(addProjectNameInput);
-        addProject.appendChild(addProjectBtn);
+    if (container.children.length === 0) {
+        buildWindow('Add New Project');
+        const newProject = new Project();
+        //add project to list
+        projectList.push(newProject);
+        //set up the new form in the container
+        newProject.createForm();
     }
     
-    addProjectBtn.addEventListener('click', function(){
-        if (addProjectNameInput != "") {
-            const newProject = new Project(addProject.children[0].value);
-            console.log(newProject.name);
-        }
-    })
-    addProject.removeEventListener();
 })
+
+function buildWindow(text){
+    const mainSection = document.createElement('div');
+    const mainHeader = document.createElement('div');
+    const header = document.createElement('h2');
+    const mainBody = document.createElement('div');
+
+    mainSection.id = 'mainSection';
+    mainHeader.id = 'mainHeader';
+    header.id = 'header';
+    mainBody.id = 'mainBody';
+
+    header.textContent = text;
+
+    mainHeader.appendChild(header);
+    mainSection.appendChild(mainHeader);
+    mainSection.appendChild(mainBody);
+
+    container.appendChild(mainSection);
+}
+
