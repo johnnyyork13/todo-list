@@ -1,5 +1,5 @@
 
-function createForms(bodyType) {
+function createForms(bodyType, project, task) {
     const mainBody = document.getElementById('mainBody');
     //new project body
     switch (bodyType){
@@ -12,8 +12,13 @@ function createForms(bodyType) {
             projectName.id = 'projectName';
             projectDetails.id = 'projectDetails';
             addProjectBtn.id = 'addProjectBtn';
-            projectName.placeholder = 'Project Name';
-            projectDetails.placeholder = 'Project Details';
+            if (project === '') {
+                projectName.placeholder = 'Project Name';
+                projectDetails.placeholder = 'Project Details';
+            } else {
+                projectName.value = project.name;
+                projectDetails.value = project.value;
+            }
             addProjectBtn.textContent = 'Add Project';
             projectForm.appendChild(projectName);
             projectForm.appendChild(projectDetails);
@@ -21,19 +26,17 @@ function createForms(bodyType) {
             mainBody.appendChild(projectForm);
             break;
         case 'newTask':
-            const newTaskHeader = document.createElement('h3');
             const formTaskList = document.createElement('ul');
             const newTaskBtn = document.createElement('button');
             const finishProjectBtn = document.createElement('button');
             finishProjectBtn.addEventListener('click', function(){
                 deleteBody('finishProject');
             })
-            newTaskHeader.textContent = 'Current Tasks';
             formTaskList.id = 'formTaskList';
-            newTaskBtn.textContent = 'New Task';
+            newTaskBtn.textContent = '+';
             newTaskBtn.id = 'newTaskBtn';
             finishProjectBtn.textContent = 'Done';
-            mainBody.appendChild(newTaskHeader);
+            finishProjectBtn.id = 'finishProjectBtn';
             mainBody.appendChild(formTaskList);
             mainBody.appendChild(newTaskBtn);
             mainBody.appendChild(finishProjectBtn);
@@ -43,51 +46,67 @@ function createForms(bodyType) {
             const taskForm = document.createElement('div');
             const taskName = document.createElement('input');
             const taskDetails = document.createElement('input');
+            const taskDateContainer = document.createElement('div');
+            const taskDateLabel = document.createElement('label');
             const taskDate = document.createElement('input');
+            const taskPriorityContainer = document.createElement('div');
+            const taskPriorityLabel = document.createElement('label');
             const taskPriority = document.createElement('select');
             const taskPriorityLow = document.createElement('option');
             const taskPriorityMedium = document.createElement('option');
             const taskPriorityHigh = document.createElement('option');
             const addTaskBtn = document.createElement('button');
             taskHeader.id = 'taskHeader';
-            taskHeader.textContent = 'Add Task';
+            taskDetails.id = 'taskDetails';
             taskForm.id = 'taskForm';
             taskName.id = 'taskName';
-            taskDetails.id = 'taskDetails';
-            taskDate.id = 'taskDate';
-            taskDate.type = 'date';
             taskPriority.id = 'taskPriority';
             taskPriorityLow.textContent = 'Low';
             taskPriorityMedium.textContent = 'Medium';
             taskPriorityHigh.textContent = 'High';
+            taskDateContainer.id = 'taskDateContainer';
+            taskDateLabel.textContent = 'Task Deadline';
+            taskDate.id = 'taskDate';
+            taskDate.type = 'date';
+            taskPriorityContainer.id = 'taskPriorityContainer';
+            taskPriorityLabel.textContent = 'Task Priority';
             addTaskBtn.textContent = 'Add Task';
             addTaskBtn.id = 'addTaskBtn';
+            if (task === '') {
+                taskHeader.textContent = 'New Task';
+                taskName.placeholder = 'Enter Task Name';
+                taskDetails.placeholder = 'Enter Task Details';
+            } else {
+                taskHeader.textContent = task.name;
+                taskName.value = task.name;
+                taskDetails.value = task.details;
+                taskDate.value = task.date;
+                taskPriority.value = task.priority;
+            }
             taskPriority.appendChild(taskPriorityLow);
             taskPriority.appendChild(taskPriorityMedium);
             taskPriority.appendChild(taskPriorityHigh);
+            taskPriorityContainer.appendChild(taskPriorityLabel);
+            taskPriorityContainer.appendChild(taskPriority);
+            taskDateContainer.appendChild(taskDateLabel);
+            taskDateContainer.appendChild(taskDate);
             taskForm.appendChild(taskHeader);
             taskForm.appendChild(taskName);
             taskForm.appendChild(taskDetails);
-            taskForm.appendChild(taskDate);
-            taskForm.appendChild(taskPriority);
+            taskForm.appendChild(taskDateContainer);
+            taskForm.appendChild(taskPriorityContainer);
             taskForm.appendChild(addTaskBtn);
             mainBody.appendChild(taskForm);
             break;
         case 'viewProject':
             const viewProjectName = document.createElement('h3');
-            const viewProjectDetails = document.createElement('h3');
-            const viewProjectDate = document.createElement('h3');
-            const viewProjectPriority = document.createElement('h3');
+            const viewProjectDetails = document.createElement('h4');
             const viewProjectTasks = document.createElement('ul');
             viewProjectName.id = 'viewProjectName';
             viewProjectDetails.id = 'viewProjectDetails';
-            viewProjectDate.id = 'viewProjectDate';
-            viewProjectPriority.id = 'viewProjectPriority';
             viewProjectTasks.id = 'viewProjectTasks';
             mainBody.appendChild(viewProjectName);
             mainBody.appendChild(viewProjectDetails);
-            mainBody.appendChild(viewProjectDate);
-            mainBody.appendChild(viewProjectPriority);
             mainBody.appendChild(viewProjectTasks);
     }
 }
@@ -117,8 +136,6 @@ function createBody(){
     mainBody.id = 'mainBody';
     mainSection.appendChild(mainBody);
 }
-
-
 
 function deleteBody(bodyType){
     switch (bodyType) {

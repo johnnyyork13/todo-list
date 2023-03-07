@@ -30,18 +30,45 @@ function updateProjectUl(project) {
 function viewProject(project){
     createHeader();
     createBody();
-    createForms('viewProject');
+    createForms('viewProject', '', '');
     updateHeader('nameProject', project.name);
     const viewProjectName = document.getElementById('viewProjectName');
     const viewProjectDetails = document.getElementById('viewProjectDetails');
     const viewProjectTasks = document.getElementById('viewProjectTasks');
-    viewProjectName.textContent = project.name;
-    viewProjectDetails.textContent = project.details;
+    viewProjectName.textContent = `Project Title: ${project.name}`;
+    viewProjectDetails.textContent = `Project Details: ${project.details}`;
     for (let i = 0; i < project.taskList.length; i++){
         const taskLi = document.createElement('li');
-        taskLi.textContent = project.taskList[i].name;
+        const taskName = document.createElement('p');
+        const taskLiContainer = document.createElement('div');
+        const taskDetails = document.createElement('p');
+        const taskDate = document.createElement('p');
+        const taskPriority = document.createElement('p');
+        taskLiContainer.classList.add('taskLiContainer');
+        taskName.textContent = `${project.taskList[i].name} +`;
+        taskDetails.textContent = `Task Details: ${project.taskList[i].details}`;
+        taskDate.textContent = `Task Date: ${project.taskList[i].date}`;
+        taskPriority.textContent = `Task Priority: ${project.taskList[i].priority}`;
+        
+        taskLiContainer.style.visibility = 'hidden';
+        taskLi.addEventListener('click', function(){
+            if (taskLiContainer.style.visibility === 'hidden'){
+                taskLiContainer.style.visibility = 'visible';
+                taskLiContainer.style.position = 'relative';
+                taskName.textContent = `${project.taskList[i].name} -`;
+
+            } else {
+                taskLiContainer.style.visibility = 'hidden';
+                taskLiContainer.style.position = 'absolute';
+                taskName.textContent = `${project.taskList[i].name} +`;
+            }
+        })
+        taskLi.appendChild(taskName);
+        taskLiContainer.appendChild(taskDetails);
+        taskLiContainer.appendChild(taskDate);
+        taskLiContainer.appendChild(taskPriority);
+        taskLi.appendChild(taskLiContainer);
         viewProjectTasks.appendChild(taskLi);
-        console.log(taskLi);
     }
 }
 
@@ -60,7 +87,7 @@ function getFormValues(bodyType, newProject){
 addProject.addEventListener('click', function(){
     createHeader();
     createBody();
-    createForms('newProject');
+    createForms('newProject', '', '');
     updateHeader('newProject', '');
     const newProject = new Project();
     submitProject(newProject);
@@ -73,7 +100,7 @@ function submitProject(newProject){
         updateHeader('nameProject', newProject.name);
         projectList.push(newProject);
         deleteBody('newProject');
-        createForms('newTask');
+        createForms('newTask', '', '');
         showAddTaskForm(newProject);
     })
 }
@@ -82,7 +109,7 @@ function submitProject(newProject){
 function showAddTaskForm(newProject){
     const newTaskBtn = document.getElementById('newTaskBtn');
     newTaskBtn.addEventListener('click', function(){
-        createForms('addTask');
+        createForms('addTask', '', '');
         addTaskToProject(newProject);
     })
 }
@@ -90,9 +117,10 @@ function showAddTaskForm(newProject){
 function addTaskToFormTaskList(task, project){
     const formTaskList = document.getElementById('formTaskList');
     const newTaskLi = document.createElement('li');
+    const taskLiName = document.createElement('p');
     const editTaskBtn = document.createElement('button');
     const removeTaskBtn = document.createElement('button');
-    newTaskLi.textContent = task.name;
+    taskLiName.textContent = task.name;
     editTaskBtn.textContent = 'Edit Task';
     removeTaskBtn.textContent = 'Remove Task';
     removeTaskBtn.addEventListener('click', function(){
@@ -104,14 +132,43 @@ function addTaskToFormTaskList(task, project){
         }
     })
     //don't forget to add edit task button listener
+    editTaskBtn.addEventListener('click', function(){
+        editTask(newTaskLi, task, project);
+    })
+    newTaskLi.appendChild(taskLiName);
     newTaskLi.appendChild(editTaskBtn);
     newTaskLi.appendChild(removeTaskBtn);
-    
     formTaskList.appendChild(newTaskLi);
+}
+
+function editTask(li, task, project){
+    changeBackground('dark');
+    createForms('addTask', project, task);
+    addTaskBtn.addEventListener('click', function(){
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskName = document.getElementById('taskName').value;
+        const taskDetails = document.getElementById('taskDetails').value;
+        const taskDate = document.getElementById('taskDate').value;
+        const taskPriority = document.getElementById('taskPriority').value;
+        console.log(project.taskList);
+        for (let i = 0; i < project.taskList.length; i++){
+            if (task.name === project.taskList[i].name){
+                project.taskList[i].name = taskName;
+                project.taskList[i].details = taskDetails;
+                project.taskList[i].date = taskDate;
+                project.taskList[i].priority = taskPriority;
+                li.children[0].textContent = taskName;
+                console.log(project.taskList[i].name)
+            }
+        }
+        changeBackground('light');
+        deleteBody('addTask');
+    })
 }
 
 //ADD Task Button in DOM
 function addTaskToProject(project){
+    changeBackground('dark');
     const addTaskBtn = document.getElementById('addTaskBtn');
     const taskName = document.getElementById('taskName');
     const taskDetails = document.getElementById('taskDetails');
@@ -127,5 +184,16 @@ function addTaskToProject(project){
         project.taskList.push(newTask);
         addTaskToFormTaskList(newTask, project);
         deleteBody('addTask');
+        changeBackground('light');
     })
+}
+
+function changeBackground(type){
+    const overlay = document.getElementById('overlay');
+    if (type === 'dark'){
+        overlay.style.visibility = 'visible';
+    } else if (type === 'light') {
+        overlay.style.visibility = 'hidden';
+    }
+
 }
