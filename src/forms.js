@@ -1,3 +1,4 @@
+
 function createForms(bodyType) {
     const mainBody = document.getElementById('mainBody');
     //new project body
@@ -20,6 +21,25 @@ function createForms(bodyType) {
             mainBody.appendChild(projectForm);
             break;
         case 'newTask':
+            const newTaskHeader = document.createElement('h3');
+            const formTaskList = document.createElement('ul');
+            const newTaskBtn = document.createElement('button');
+            const finishProjectBtn = document.createElement('button');
+            finishProjectBtn.addEventListener('click', function(){
+                deleteBody('finishProject');
+            })
+            newTaskHeader.textContent = 'Current Tasks';
+            formTaskList.id = 'formTaskList';
+            newTaskBtn.textContent = 'New Task';
+            newTaskBtn.id = 'newTaskBtn';
+            finishProjectBtn.textContent = 'Done';
+            mainBody.appendChild(newTaskHeader);
+            mainBody.appendChild(formTaskList);
+            mainBody.appendChild(newTaskBtn);
+            mainBody.appendChild(finishProjectBtn);
+            break;
+        case 'addTask':
+            const taskHeader = document.createElement('h3');
             const taskForm = document.createElement('div');
             const taskName = document.createElement('input');
             const taskDetails = document.createElement('input');
@@ -29,6 +49,8 @@ function createForms(bodyType) {
             const taskPriorityMedium = document.createElement('option');
             const taskPriorityHigh = document.createElement('option');
             const addTaskBtn = document.createElement('button');
+            taskHeader.id = 'taskHeader';
+            taskHeader.textContent = 'Add Task';
             taskForm.id = 'taskForm';
             taskName.id = 'taskName';
             taskDetails.id = 'taskDetails';
@@ -43,6 +65,7 @@ function createForms(bodyType) {
             taskPriority.appendChild(taskPriorityLow);
             taskPriority.appendChild(taskPriorityMedium);
             taskPriority.appendChild(taskPriorityHigh);
+            taskForm.appendChild(taskHeader);
             taskForm.appendChild(taskName);
             taskForm.appendChild(taskDetails);
             taskForm.appendChild(taskDate);
@@ -50,6 +73,22 @@ function createForms(bodyType) {
             taskForm.appendChild(addTaskBtn);
             mainBody.appendChild(taskForm);
             break;
+        case 'viewProject':
+            const viewProjectName = document.createElement('h3');
+            const viewProjectDetails = document.createElement('h3');
+            const viewProjectDate = document.createElement('h3');
+            const viewProjectPriority = document.createElement('h3');
+            const viewProjectTasks = document.createElement('ul');
+            viewProjectName.id = 'viewProjectName';
+            viewProjectDetails.id = 'viewProjectDetails';
+            viewProjectDate.id = 'viewProjectDate';
+            viewProjectPriority.id = 'viewProjectPriority';
+            viewProjectTasks.id = 'viewProjectTasks';
+            mainBody.appendChild(viewProjectName);
+            mainBody.appendChild(viewProjectDetails);
+            mainBody.appendChild(viewProjectDate);
+            mainBody.appendChild(viewProjectPriority);
+            mainBody.appendChild(viewProjectTasks);
     }
 }
 
@@ -61,11 +100,14 @@ function createHeader(){
     }
 }
 
-function updateHeader(bodyType){
+function updateHeader(bodyType, header){
     const mainHeader = document.getElementById('mainHeader');
     switch (bodyType) {
         case 'newProject':
             mainHeader.textContent = 'Add New Project';
+            break;
+        case 'nameProject':
+            mainHeader.textContent = header;
             break;
     }
 }
@@ -84,9 +126,17 @@ function deleteBody(bodyType){
             const projectForm = document.getElementById('projectForm');
             projectForm.remove();
             break;
-        case 'newTask':
+        case 'addTask':
             const taskForm = document.getElementById('taskForm');
             taskForm.remove();
+            break;
+        case 'finishProject':
+            const mainSection = document.getElementById('mainSection');
+            for (let i = mainSection.children.length -1; i >= 0; i--){
+                let e = mainSection.children[i];
+                e.remove();
+            }
+            break;
     }
 }
 

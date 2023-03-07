@@ -13,15 +13,36 @@ const importantBtn = document.getElementById('importantBtn');
 
 const projectList = [];
 
-function updateProjectUl(projectName) {
+function updateProjectUl(project) {
     const li = document.createElement('li');
-    const project = document.createElement('div');
-    project.textContent = projectName;
-    project.classList.add('projectLink');
-    project.classList.add('project');
-    li.appendChild(project);
+    const projectDiv = document.createElement('div');
+    projectDiv.textContent = project.name;
+    projectDiv.addEventListener('click', function(){
+        viewProject(project);
+    })
+    projectDiv.classList.add('projectLink');
+    projectDiv.classList.add('project');
+    li.appendChild(projectDiv);
     projectUl.appendChild(li);
     projectUl.insertBefore(li, li.previousElementSibling);
+}
+
+function viewProject(project){
+    createHeader();
+    createBody();
+    createForms('viewProject');
+    updateHeader('nameProject', project.name);
+    const viewProjectName = document.getElementById('viewProjectName');
+    const viewProjectDetails = document.getElementById('viewProjectDetails');
+    const viewProjectTasks = document.getElementById('viewProjectTasks');
+    viewProjectName.textContent = project.name;
+    viewProjectDetails.textContent = project.details;
+    for (let i = 0; i < project.taskList.length; i++){
+        const taskLi = document.createElement('li');
+        taskLi.textContent = project.taskList[i].name;
+        viewProjectTasks.appendChild(taskLi);
+        console.log(taskLi);
+    }
 }
 
 function getFormValues(bodyType, newProject){
@@ -35,28 +56,76 @@ function getFormValues(bodyType, newProject){
     }
 }
 
+//add project button in sidebar
+addProject.addEventListener('click', function(){
+    createHeader();
+    createBody();
+    createForms('newProject');
+    updateHeader('newProject', '');
+    const newProject = new Project();
+    submitProject(newProject);
+})
 function submitProject(newProject){
     const addProjectBtn = document.getElementById('addProjectBtn');
     addProjectBtn.addEventListener('click', function(){
         getFormValues('newProject', newProject);
-        updateProjectUl(newProject.name);
+        updateProjectUl(newProject);
+        updateHeader('nameProject', newProject.name);
         projectList.push(newProject);
         deleteBody('newProject');
         createForms('newTask');
+        showAddTaskForm(newProject);
     })
 }
 
-addProject.addEventListener('click', function(){
-    createHeader();
-    updateHeader('newProject');
-    createBody();
-    createForms('newProject');
-    const newProject = new Project();
-    submitProject(newProject);
-})
+//New Task Button in DOM
+function showAddTaskForm(newProject){
+    const newTaskBtn = document.getElementById('newTaskBtn');
+    newTaskBtn.addEventListener('click', function(){
+        createForms('addTask');
+        addTaskToProject(newProject);
+    })
+}
 
+function addTaskToFormTaskList(task, project){
+    const formTaskList = document.getElementById('formTaskList');
+    const newTaskLi = document.createElement('li');
+    const editTaskBtn = document.createElement('button');
+    const removeTaskBtn = document.createElement('button');
+    newTaskLi.textContent = task.name;
+    editTaskBtn.textContent = 'Edit Task';
+    removeTaskBtn.textContent = 'Remove Task';
+    removeTaskBtn.addEventListener('click', function(){
+        newTaskLi.remove();
+        for (let i = 0; i < project.taskList.length; i++) {
+            if (task.name === project.taskList[i].name){
+                project.taskList.splice(i, 1);
+            }
+        }
+    })
+    //don't forget to add edit task button listener
+    newTaskLi.appendChild(editTaskBtn);
+    newTaskLi.appendChild(removeTaskBtn);
+    
+    formTaskList.appendChild(newTaskLi);
+}
 
-importantBtn.addEventListener('click', function(){
-    deleteBody('newProject');
-})
+//ADD Task Button in DOM
+function addTaskToProject(project){
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskName = document.getElementById('taskName');
+    const taskDetails = document.getElementById('taskDetails');
+    const taskDate = document.getElementById('taskDate');
+    const taskPriority = document.getElementById('taskPriority');
 
+    addTaskBtn.addEventListener('click', function(){
+        const newTask = new Task();
+        newTask.name = taskName.value;
+        newTask.details = taskDetails.value;
+        newTask.date = taskDate.value;
+        newTask.priority = taskPriority.value;
+        project.taskList.push(newTask);
+        addTaskToFormTaskList(newTask, project);
+        deleteBody('addTask');
+    })
+}
