@@ -1,45 +1,62 @@
-//import modules
-const {Project} = require('./addProject.js');
+const {Project} = require('./project.js');
+const {Task} = require('./task.js');
+const {createHeader} = require('./forms.js');
+const {updateHeader} = require('./forms.js');
+const {createBody} = require('./forms.js');
+const {createForms} = require('./forms.js');
+const {deleteBody} = require('./forms.js');
 
-//get elements from DOM
+const projectUl = document.getElementById('projectUl');
 const addProject = document.getElementById('addProject');
-const container = document.getElementById('container');
-const projectLink = document.getElementsByClassName('projectLink');
+const mainSection = document.getElementById('mainSection');
+const importantBtn = document.getElementById('importantBtn');
 
-//hold projects in list
 const projectList = [];
 
-//sidebar
-//add project button 
-addProject.addEventListener('click', function(){
-    if (container.children.length === 0) {
-        buildWindow('Add New Project');
-        const newProject = new Project();
-        //add project to list
-        projectList.push(newProject);
-        //set up the new form in the container
-        newProject.createForm();
+function updateProjectUl(projectName) {
+    const li = document.createElement('li');
+    const project = document.createElement('div');
+    project.textContent = projectName;
+    project.classList.add('projectLink');
+    project.classList.add('project');
+    li.appendChild(project);
+    projectUl.appendChild(li);
+    projectUl.insertBefore(li, li.previousElementSibling);
+}
+
+function getFormValues(bodyType, newProject){
+    switch (bodyType) {
+        case 'newProject':
+            const projectName = document.getElementById('projectName');
+            const projectDetails = document.getElementById('projectDetails');
+            newProject.name = projectName.value;
+            newProject.details = projectDetails.value;
+            break;
     }
-    
+}
+
+function submitProject(newProject){
+    const addProjectBtn = document.getElementById('addProjectBtn');
+    addProjectBtn.addEventListener('click', function(){
+        getFormValues('newProject', newProject);
+        updateProjectUl(newProject.name);
+        projectList.push(newProject);
+        deleteBody('newProject');
+        createForms('newTask');
+    })
+}
+
+addProject.addEventListener('click', function(){
+    createHeader();
+    updateHeader('newProject');
+    createBody();
+    createForms('newProject');
+    const newProject = new Project();
+    submitProject(newProject);
 })
 
-function buildWindow(text){
-    const mainSection = document.createElement('div');
-    const mainHeader = document.createElement('div');
-    const header = document.createElement('h2');
-    const mainBody = document.createElement('div');
 
-    mainSection.id = 'mainSection';
-    mainHeader.id = 'mainHeader';
-    header.id = 'header';
-    mainBody.id = 'mainBody';
-
-    header.textContent = text;
-
-    mainHeader.appendChild(header);
-    mainSection.appendChild(mainHeader);
-    mainSection.appendChild(mainBody);
-
-    container.appendChild(mainSection);
-}
+importantBtn.addEventListener('click', function(){
+    deleteBody('newProject');
+})
 

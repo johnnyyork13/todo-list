@@ -1,3 +1,5 @@
+const {Task} = require('./task.js');
+
 const projects = document.getElementById('projects');
 const container = document.getElementById('container');
 
@@ -7,7 +9,6 @@ function Project(){
 
     this.name = '';
     this.details = '';
-    this.date = '';
     this.taskList = [];
     const thisProject = this;
 
@@ -24,13 +25,10 @@ function Project(){
         detailBox.placeholder = "Details of Project";
         detailBox.type = 'text'; 
         detailBox.id = 'details';
-        const dateBox = document.createElement('input');
-        dateBox.type = 'date';
-        dateBox.id = 'date';
         const createBtn = document.createElement('button');
         createBtn.textContent = 'Create Project';
         createBtn.id = 'createBtn';
-        return [nameBox, detailBox, dateBox, createBtn];
+        return [nameBox, detailBox, createBtn];
     }
 
     this.createForm = () => {
@@ -50,8 +48,10 @@ function Project(){
         btn.addEventListener('click', function(){
             thisProject.setValues(inputList);
             thisProject.updateProjects(thisProject.name);
-            thisProject.cleanUpForm();
+            thisProject.cleanUpForm('body');
             thisProject.addEvent();
+            thisProject.setHeader(thisProject.name);
+            thisProject.addTasks();
         })
     }
 
@@ -65,20 +65,33 @@ function Project(){
                 case 'details':
                     this.details = list[i].value;
                     break;
-                case 'date':
-                    this.date = list[i].value;
-                    break;
             }
         }
     }
 
-    this.cleanUpForm = () => {
-        for (let i = mainBody.children.length - 1; i >= 0; i--) {
-            let e = mainBody.children[i];
-            e.remove();
+    this.cleanUpForm = (whichElements) => {
+        if (whichElements === "body") {
+            for (let i = mainBody.children.length - 1; i >= 0; i--) {
+                let e = mainBody.children[i];
+                e.remove();
+            }
+        } else if (whichElements === "all") {
+            for (let i = mainBody.children.length - 1; i >= 0; i--) {
+                let e = mainBody.children[i];
+                e.remove();
+            } 
+            for (let i = container.children.length - 1; i >= 0; i--){
+                let e = container.children[i];
+                e.remove();
+            }
         }
+        
     }
 
+    this.setHeader = (name) => {
+        const header = document.getElementById('header');
+        header.textContent = name;
+    }
     //updates sidebar project list
     this.updateProjects = (projectName) => {
         projectLink.textContent = projectName;
@@ -99,11 +112,109 @@ function Project(){
         })
     }
 
-    //view project data when called
-    this.viewProject = () => {
+    this.buildProjectDetails = () => {
         const nameLabel = document.createElement('h3');
         const detailLabel = document.createElement('h3');
-        const dateLabel = document.createElement('h3');
+        const taskList = document.createElement('ul');
+
+        nameLabel.textContent = `Project Name: ${thisProject.name}`;
+        detailLabel.textContent = `Project Details: ${thisProject.details}`;
+        taskList.id = `${thisProject.name}list`
+
+        if (mainBody.children.length === 0) {
+            mainBody.appendChild(nameLabel);
+            mainBody.appendChild(detailLabel);
+            mainBody.appendChild(taskList);
+        }
+
+        return taskList;
+    }
+
+    this.taskForm = () => {
+        const taskForm = document.createElement('div');
+        const taskName = document.createElement('input');
+        const taskDate = document.createElement('input');
+        const taskDetails = document.createElement('input');
+        const taskPriority = document.createElement('select');
+        const priorityLow = document.createElement('option');
+        const priorityMedium = document.createElement('option');
+        const priorityHigh = document.createElement('option');
+        const addTaskBtn = document.createElement('button');
+        
+        taskForm.id = 'taskList';
+        taskName.type = 'text';
+        taskDate.type = 'date';
+        taskDetails.type = 'text';
+        priorityLow.textContent = 'Low';
+        priorityMedium.textContent = 'Medium';
+        priorityHigh.textContent = 'High';
+        addTaskBtn.textContent = 'Add Task';
+
+        taskPriority.appendChild(priorityLow);
+        taskPriority.appendChild(priorityMedium);
+        taskPriority.appendChild(priorityHigh);
+
+        taskForm.appendChild(taskName);
+        taskForm.appendChild(taskDetails);
+        taskForm.appendChild(taskDate);
+        taskForm.appendChild(taskPriority);
+        taskForm.appendChild(addTaskBtn);
+
+        mainBody.appendChild(taskForm);
+
+        return [taskName, taskDate, taskDetails, taskPriority, addTaskBtn];
+    }
+
+    this.updateTaskList = (task) => {
+        const taskList = document.getElementById(`${thisProject.name}list`);
+        const newTask = document.createElement('li');
+        newTask.textContent = task.name;
+
+        taskList.appendChild(newTask);
+    }
+
+    this.addAnotherTask = () => {
+        const addAnotherTask = document.createElement('button');
+        addAnotherTask.textContent = 'Add Another Task';
+
+        mainBody.appendChild(addAnotherTask);
+        addAnotherTask.addEventListener('click', function(){
+            thisProject.addTasks();
+            addAnotherTask.remove();
+        })
+
+    }
+
+    this.addTasks = () => {
+        //grab taskList from buildProjectDetails 
+        const taskList = thisProject.buildProjectDetails();
+        //grab taskform from taskForm and build form
+        const taskForm = thisProject.taskForm();
+        //taskbtn is last element in task form
+        const addTaskBtn = taskForm[taskForm.length - 1];
+
+        addTaskBtn.addEventListener('click', function(){
+            const newTask = new Task();
+            newTask.name = taskForm[0].value;
+            newTask.date = taskForm[1].value;
+            newTask.details = taskForm[2].value;
+            newTask.priority = taskForm[3].value;
+            newTask.project = thisProject.name;
+            thisProject.updateTaskList(newTask);
+            thisProject.emptyTaskForm();
+            thisProject.addAnotherTask();
+            thisProject.taskList.push(newTask);
+            console.log(thisProject.taskList);
+        })
+    }
+
+    this.emptyTaskForm = () => {
+        const taskList = document.getElementById('taskList');
+        for (let i = taskList.length; i >= 0; i--) {
+            let e = taskList[i];
+            e.remove();
+        }
+        taskList.remove();
     }
 }
 
