@@ -18,6 +18,7 @@ function createForm(whatKind, formData){
     mainSection.id = 'mainSection';
     mainHeader.id = 'mainHeader';
     header.id = 'header';
+    header.textContent = 'New Project';
     mainBody.id = 'mainBody';
 
     if (whatKind === 'project') {
@@ -33,6 +34,7 @@ function createForm(whatKind, formData){
         checkData(whatKind, formData, [projectNameInput, projectDetailsInput]);
         appendElements([projectNameInput, projectDetailsInput], addProjectBtn)
     } else if (whatKind == 'task') {
+        header.textContent = 'New Task';
         const taskInputForm = document.createElement('div');
         const taskNameInput = document.createElement('input');
         const taskDetailsInput = document.createElement('input');

@@ -25,6 +25,8 @@ function removeEverything(){
 
 function showAddTaskToProjectPage(project){
     const mainBody = document.getElementById('mainBody');
+    const header = document.getElementById('header');
+    header.textContent = project.name;
     for (let i = 0; i < project.taskList.length; i++) {
         const task = project.taskList[i];
         const taskDiv = document.createElement('div');

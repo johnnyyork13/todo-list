@@ -7,7 +7,7 @@ const {removeEverything} = require('./modules.js');
 const {showAddTaskToProjectPage} = require('./modules.js');
 const {takeValuesAndCreateTask} = require('./modules.js');
 const {addProjectToProjectList} = require('./modules.js');
-const {viewObject} = require('./modules.js');
+const {viewProject} = require('./modules.js');
 
 const addProject = document.getElementById('addProject');
 const projectList = [];
