@@ -56,7 +56,29 @@ aside {
 }
 
 aside li:hover {
-    border-bottom: 2px solid var(--main);
+    color: var(--main);
+}
+
+#projectUl li {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+#projectUl li:hover button{
+    visibility: visible;
+}
+
+#projectUl button {
+    visibility: hidden;
+    background-color: var(--second);
+    border: none;
+    font-size: 1em;
+}
+
+#projectUl button:hover {
+    color: var(--main);
+    cursor: pointer;
 }
 
 ul {
@@ -96,6 +118,30 @@ section {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+}
+
+h2 {
+    color: var(--text);
+}
+
+#closeWindowBtn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: var(--second);
+    color: var(--main);
+    font-size: .5em;
+    border: none;
+    cursor: pointer;
+}
+
+#closeWindowBtn:hover {
+    color: var(--third);
+}
+
+#closeTaskBtn {
+    position: absolute;
 }
 
 #mainBody {
@@ -108,6 +154,8 @@ section {
     position: relative;
     padding-top: 20px;
     background-color: var(--bg);
+    color: var(--text);
+    font-weight: bold;
 }
 
 #mainBody input {
@@ -127,10 +175,6 @@ section {
     border: none;
 }
 
-
-#mainBody button:hover {
-    border-bottom: 2px solid var(--main);
-}
 
 #taskFormContainer {
     position: absolute;
@@ -155,12 +199,40 @@ section {
     margin-top: 15px;
 }
 
-#taskDiv {
+.taskDiv {
     display: flex;
     flex-direction: column;
     width: 100%;
     align-items: center;
-    border: 1px solid red;
+}
+
+.taskTop {
+    display: flex;
+    width: 40%;
+    justify-content: space-around;
+}
+
+.taskTop:hover{
+    border: 2px solid var(--main);
+    cursor:pointer;
+}
+
+.taskBottom {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+}
+
+#addNewTaskBtn {
+    font-size: 2em;
+}
+
+#editProjectBtn {
+    font-size: 1em;
+    position: absolute;
+    bottom: 20px;
 }
 
 footer {
