@@ -1,3 +1,5 @@
+const {changeOverlay} = require('./modules.js');
+
 const container = document.getElementById('container');
 
 function createForm(whatKind, formData){
@@ -32,10 +34,9 @@ function createForm(whatKind, formData){
         addProjectBtn.id = 'addProjectBtn';
         addProjectBtn.textContent = 'Create Project';
         checkData(whatKind, formData, [projectNameInput, projectDetailsInput]);
-        appendElements([projectNameInput, projectDetailsInput], addProjectBtn)
+        appendElements(false, [projectNameInput, projectDetailsInput], addProjectBtn)
     } else if (whatKind == 'task') {
         header.textContent = 'New Task';
-        const taskInputForm = document.createElement('div');
         const taskNameInput = document.createElement('input');
         const taskDetailsInput = document.createElement('input');
         const taskDateLabel = document.createElement('label');
@@ -50,7 +51,6 @@ function createForm(whatKind, formData){
         taskPriorityInput.appendChild(low);
         taskPriorityInput.appendChild(medium);
         taskPriorityInput.appendChild(high);
-        taskInputForm.id = 'taskInputForm';
         taskNameInput.id = 'taskNameInput';
         taskNameInput.placeholder = 'Enter Task Name';
         taskDetailsInput.id = 'taskDetailsInput';
@@ -65,7 +65,7 @@ function createForm(whatKind, formData){
         addTaskBtn.id = 'addTaskBtn';
         addTaskBtn.textContent = 'Add Task';
         checkData(whatKind, formData, [taskNameInput, taskDetailsInput, taskDateInput, taskPriorityInput])
-        appendElements([taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn)
+        appendElements(true, [taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn)
     }
     //check if there is any data
     function checkData(whatKind, formData, inputList){
@@ -82,16 +82,32 @@ function createForm(whatKind, formData){
         }
     }
     //append new elements to DOM
-    function appendElements(inputList, btn){
-        for (let i = 0; i < inputList.length; i++) {
-            const e = inputList[i];
-            mainBody.appendChild(e);
+    function appendElements(isTask, inputList, btn){
+        if (!isTask) {
+            for (let i = 0; i < inputList.length; i++) {
+                const e = inputList[i];
+                mainBody.appendChild(e);
+            }
+            mainBody.appendChild(btn);
+        } else {
+            changeOverlay('dark');
+            const taskFormContainer = document.createElement('div');
+            taskFormContainer.id = 'taskFormContainer';
+            const taskFormHeader = document.createElement('h3');
+            taskFormHeader.textContent = 'Task Form';
+            taskFormContainer.appendChild(taskFormHeader);
+            for (let i = 0; i < inputList.length; i++) {
+                const e = inputList[i];
+                taskFormContainer.appendChild(e);
+            }
+            taskFormContainer.appendChild(btn);
+            mainBody.appendChild(taskFormContainer);
         }
-        mainBody.appendChild(btn);
         mainHeader.appendChild(header);
         mainSection.appendChild(mainHeader);
         mainSection.appendChild(mainBody);
         container.appendChild(mainSection);
+        
     }
 }
 

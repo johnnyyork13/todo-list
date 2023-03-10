@@ -8,6 +8,7 @@ const {showAddTaskToProjectPage} = require('./modules.js');
 const {takeValuesAndCreateTask} = require('./modules.js');
 const {addProjectToProjectList} = require('./modules.js');
 const {viewProject} = require('./modules.js');
+const {changeOverlay} = require('./modules.js');
 
 const addProject = document.getElementById('addProject');
 const projectList = [];
@@ -53,6 +54,7 @@ function addTaskToProject(project){
     const addNewTaskBtn = document.getElementById('addNewTaskBtn');
     addNewTaskBtn.addEventListener('click', function(){
         createForm('task', '');
+        changeOverlay('dark');
         const addTaskBtn = document.getElementById('addTaskBtn');
         addTaskBtn.addEventListener('click', function(){
             const newTask = new Task();
@@ -61,6 +63,7 @@ function addTaskToProject(project){
             removeMainBodyContent();
             showAddTaskToProjectPage(project);
             addTaskToProject(project);
+            changeOverlay('light');
         })
     })
 }

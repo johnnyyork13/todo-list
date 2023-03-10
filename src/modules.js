@@ -1,4 +1,8 @@
 const {createForm} = require('./forms.js');
+const {Task} = require('./project.js');
+
+const overlay = document.getElementById('overlay');
+overlay.style.visibility = 'hidden';
 
 function takeValuesAndCreateProject(project){
     const projectName = document.getElementById('projectNameInput').value;
@@ -38,8 +42,10 @@ function showAddTaskToProjectPage(project){
     const addNewTaskBtn = document.createElement('button');
     const finishedAddingTasksBtn = document.createElement('button');
     addNewTaskBtn.id = 'addNewTaskBtn';
+    addNewTaskBtn.classList.add('addNewTaskBtn');
     addNewTaskBtn.textContent = '+'
     finishedAddingTasksBtn.id = 'finishedAddingTasksBtn';
+    finishedAddingTasksBtn.classList.add('regularBtn');
     finishedAddingTasksBtn.textContent = 'Done';
     mainBody.appendChild(addNewTaskBtn);
     mainBody.appendChild(finishedAddingTasksBtn);
@@ -87,6 +93,7 @@ function viewProject(newProject) {
     const projectDetails = document.createElement('h3');
     const editProjectBtn = document.createElement('button');
     const closeProjectBtn = document.createElement('button');
+    const addNewTaskBtn = document.createElement('button');
     header.textContent = newProject.name;
     projectDetails.textContent = newProject.details;
     mainSection.id = 'mainSection';
@@ -94,6 +101,7 @@ function viewProject(newProject) {
     mainBody.id = 'mainBody';
     editProjectBtn.textContent = 'Edit Project';
     closeProjectBtn.textContent = 'Close';
+    addNewTaskBtn.textContent = '+';
     mainHeader.appendChild(header);
     mainHeader.appendChild(closeProjectBtn);
     mainBody.appendChild(projectDetails);
@@ -106,10 +114,11 @@ function viewProject(newProject) {
         const taskPriority = document.createElement('p');
         const editTaskBtn = document.createElement('button');
         const deleteTaskBtn = document.createElement('button');
-        taskName.textContent = task.name;
-        taskDetails.textContent = task.details;
-        taskDate.textContent = task.date;
-        taskPriority.textContent = task.priority;
+        taskDiv.id = 'taskDiv';
+        taskName.textContent = `Task name: ${task.name}`;
+        taskDetails.textContent = `Task details: ${task.details}`;
+        taskDate.textContent = `Task date: ${task.date}`;
+        taskPriority.textContent = `Task Priority: ${task.priority}`;
         editTaskBtn.textContent = 'Edit';
         deleteTaskBtn.textContent = 'Delete';
         editTaskBtn.addEventListener('click', function(){
@@ -138,6 +147,7 @@ function viewProject(newProject) {
         mainBody.appendChild(taskDiv);
     }
     mainBody.appendChild(editProjectBtn);
+    mainBody.appendChild(addNewTaskBtn);
     mainSection.appendChild(mainHeader);
     mainSection.appendChild(mainBody);
     container.appendChild(mainSection);
@@ -154,6 +164,16 @@ function viewProject(newProject) {
             viewProject(newProject);
         })
     })
+    addNewTaskBtn.addEventListener('click', function(){
+        createForm('task', '');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        addTaskBtn.addEventListener('click', function(){
+            const newTask = new Task();
+            takeValuesAndCreateTask(newTask);
+            newProject.taskList.push(newTask);
+            viewProject(newProject);
+        })
+    })
 }
 
 function updateProjectList(newProject, oldProject){
@@ -166,6 +186,14 @@ function updateProjectList(newProject, oldProject){
     }
 }
 
+function changeOverlay(type){
+    if (type === 'light') {
+        overlay.style.visibility = 'hidden';
+    } else if (type === 'dark') {
+        overlay.style.visibility = 'visible';
+    }
+}
+
 module.exports = {
     takeValuesAndCreateProject,
     removeMainBodyContent,
@@ -173,4 +201,5 @@ module.exports = {
     showAddTaskToProjectPage,
     takeValuesAndCreateTask,
     addProjectToProjectList,
-    viewProject}
+    viewProject,
+    changeOverlay}
