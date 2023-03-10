@@ -1,6 +1,20 @@
-const {changeOverlay} = require('./modules.js');
-
 const container = document.getElementById('container');
+
+function removeMainBodyContent(){
+    const mainBody = document.getElementById('mainBody');
+    for (let i = mainBody.children.length - 1; i >= 0; i--) {
+        const e = mainBody.children[i];
+        e.remove();
+    }
+}
+
+function removeEverything(){
+    const container = document.getElementById('container');
+    for (let i = container.children.length - 1; i >= 0; i--){
+        const e = container.children[i];
+        e.remove();
+    }
+}
 
 function createForm(whatKind, formData){
     //remove old form
@@ -20,23 +34,26 @@ function createForm(whatKind, formData){
     mainSection.id = 'mainSection';
     mainHeader.id = 'mainHeader';
     header.id = 'header';
-    header.textContent = 'New Project';
     mainBody.id = 'mainBody';
 
     if (whatKind === 'project') {
+        header.textContent = 'New Project';
         const projectNameInput = document.createElement('input');
         const projectDetailsInput = document.createElement('input');
         const addProjectBtn = document.createElement('button');
+        const closeWindowBtn = document.createElement('button');
         projectNameInput.id = 'projectNameInput';
         projectDetailsInput.id = 'projectDetailsInput';
         projectNameInput.placeholder = 'Enter Project Name';
         projectDetailsInput.placeholder = 'Enter Project Details';
         addProjectBtn.id = 'addProjectBtn';
         addProjectBtn.textContent = 'Create Project';
+        closeWindowBtn.textContent = 'Close';
+        closeWindowBtn.id = 'closeWindowBtn';
         checkData(whatKind, formData, [projectNameInput, projectDetailsInput]);
-        appendElements(false, [projectNameInput, projectDetailsInput], addProjectBtn)
+        appendElements(false, [projectNameInput, projectDetailsInput], addProjectBtn, closeWindowBtn)
     } else if (whatKind == 'task') {
-        header.textContent = 'New Task';
+        const closeTaskBtn = document.createElement('button');
         const taskNameInput = document.createElement('input');
         const taskDetailsInput = document.createElement('input');
         const taskDateLabel = document.createElement('label');
@@ -47,6 +64,8 @@ function createForm(whatKind, formData){
         const medium = document.createElement('option');
         const high = document.createElement('option');
         const addTaskBtn = document.createElement('button');
+        closeTaskBtn.textContent = 'Close';
+        closeTaskBtn.id = 'closeTaskBtn';
         taskDateInput.type = 'date';
         taskPriorityInput.appendChild(low);
         taskPriorityInput.appendChild(medium);
@@ -65,7 +84,7 @@ function createForm(whatKind, formData){
         addTaskBtn.id = 'addTaskBtn';
         addTaskBtn.textContent = 'Add Task';
         checkData(whatKind, formData, [taskNameInput, taskDetailsInput, taskDateInput, taskPriorityInput])
-        appendElements(true, [taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn)
+        appendElements(true, [taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn, closeTaskBtn)
     }
     //check if there is any data
     function checkData(whatKind, formData, inputList){
@@ -82,16 +101,20 @@ function createForm(whatKind, formData){
         }
     }
     //append new elements to DOM
-    function appendElements(isTask, inputList, btn){
+    function appendElements(isTask, inputList, btn, closeBtn){
         if (!isTask) {
             for (let i = 0; i < inputList.length; i++) {
                 const e = inputList[i];
                 mainBody.appendChild(e);
             }
             mainBody.appendChild(btn);
+            mainHeader.appendChild(closeBtn);
+            closeBtn.addEventListener('click', function(){
+                removeEverything();
+            })
         } else {
-            changeOverlay('dark');
             const taskFormContainer = document.createElement('div');
+            taskFormContainer.appendChild(closeBtn);
             taskFormContainer.id = 'taskFormContainer';
             const taskFormHeader = document.createElement('h3');
             taskFormHeader.textContent = 'Task Form';
@@ -107,8 +130,14 @@ function createForm(whatKind, formData){
         mainSection.appendChild(mainHeader);
         mainSection.appendChild(mainBody);
         container.appendChild(mainSection);
-        
     }
 }
 
-module.exports = {createForm};
+function setHeader(name) {
+    const header = document.getElementById('header');
+    header.textContent = name;
+}
+
+module.exports = {createForm,
+    removeEverything,
+    removeMainBodyContent};
