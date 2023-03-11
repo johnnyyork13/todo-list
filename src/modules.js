@@ -274,48 +274,96 @@ function viewTasks(projectList, type){
     const mainSection = document.createElement('div');
     const mainHeader = document.createElement('div');
     const header = document.createElement('h2');
+    const closeWindowBtn = document.createElement('button');
     const mainBody = document.createElement('div');
     mainSection.id = 'mainSection';
     mainHeader.id = 'mainHeader';
-    header.textContent = 'All Tasks';
+    header.textContent = `${type} Tasks`;
+    closeWindowBtn.id = 'closeWindowBtn';
+    closeWindowBtn.textContent = 'Close';
     mainBody.id = 'mainBody';
-
+    closeWindowBtn.addEventListener('click', function(){
+        removeEverything();
+    })
+    function createTaskDiv(task, project){
+        const taskDiv = document.createElement('div');
+        const taskTop = document.createElement('div');
+        const taskBottom = document.createElement('div');
+        taskDiv.classList.add('taskDiv');
+        taskTop.classList.add('taskTop');
+        taskBottom.classList.add('taskBottom');
+        const projectName = document.createElement('p');
+        const taskName = document.createElement('p');
+        const taskDetails = document.createElement('p');
+        const taskDate = document.createElement('p');
+        const taskPriority = document.createElement('p');
+        projectName.textContent = `Project: ${project.name}`;
+        taskName.textContent = `Task: ${task.name}`;
+        taskDetails.textContent = `Task Details: ${task.details}`;
+        taskDate.textContent = `Task Date: ${task.date}`;
+        taskPriority.textContent = `Task Priority: ${task.priority}`;
+        taskTop.appendChild(projectName);
+        taskTop.appendChild(taskName);
+        taskBottom.appendChild(taskDetails);
+        taskBottom.appendChild(taskDate);
+        taskBottom.appendChild(taskPriority);
+        taskDiv.appendChild(taskTop);
+        taskDiv.appendChild(taskBottom);
+        mainBody.appendChild(taskDiv);
+        taskBottom.style.visibility = 'hidden';
+        taskBottom.style.position = 'absolute';
+        taskTop.addEventListener('click', function(){
+            expandTask(this);
+        })
+        
+    }
     for (let i = 0; i < projectList.length; i++) {
         const project = projectList[i];
         for (let x = 0; x < project.taskList.length; x++) {
             const task = project.taskList[x];
-            const taskDiv = document.createElement('div');
-            const taskTop = document.createElement('div');
-            const taskBottom = document.createElement('div');
-            taskDiv.classList.add('taskDiv');
-            taskTop.classList.add('taskTop');
-            taskBottom.classList.add('taskBottom');
-            const projectName = document.createElement('p');
-            const taskName = document.createElement('p');
-            const taskDetails = document.createElement('p');
-            const taskDate = document.createElement('p');
-            const taskPriority = document.createElement('p');
-            projectName.textContent = `Project: ${project.name}`;
-            taskName.textContent = `Task: ${task.name}`;
-            taskDetails.textContent = `Task Details: ${task.details}`;
-            taskDate.textContent = `Task Date: ${task.date}`;
-            taskPriority.textContent = `Task Priority: ${task.priority}`;
-            taskTop.appendChild(projectName);
-            taskTop.appendChild(taskName);
-            taskBottom.appendChild(taskDetails);
-            taskBottom.appendChild(taskDate);
-            taskBottom.appendChild(taskPriority);
-            taskDiv.appendChild(taskTop);
-            taskDiv.appendChild(taskBottom);
-            mainBody.appendChild(taskDiv);
-            taskBottom.style.visibility = 'hidden';
-            taskBottom.style.position = 'absolute';
-            taskTop.addEventListener('click', function(){
-                expandTask(this);
-            })
+            if (type === 'All') {
+                createTaskDiv(task, project);
+            } else if (type === "Today's"){
+                const date = new Date();
+                let month = date.getMonth() + 1;
+                let day = date.getDate();
+                if (Number(day) < 10) {
+                    day = `0${day}`;
+                }
+                if (Number(month) < 10) {
+                    month = `0${month}`;
+                }
+                let year = date.getFullYear();
+                let todaysDate = `${year}-${month}-${day}`;
+                if (task.date === todaysDate) {
+                    createTaskDiv(task, project);
+                }
+            } else if (type === "Next Seven Day's") {
+                //build todays date in UTC
+                const todaysDate = new Date();
+                const todaysDay = todaysDate.getDate();
+                const todaysMonth = todaysDate.getMonth() +1;
+                const todaysYear = todaysDate.getFullYear();
+                const fixedTodaysDate = new Date(`${todaysYear}/${todaysMonth}/${todaysDay}`);
+                const fixedTodaysDatePlusSevenDays = new Date(`${todaysYear}/${todaysMonth}/${todaysDay + 7}`);
+                //build input values date in UTC
+                const taskDate = new Date(task.date);
+                const taskDateDay = taskDate.getUTCDate();
+                const taskDateMonth = taskDate.getUTCMonth() +1;
+                const taskDateYear = taskDate.getUTCFullYear();
+                const fixedTaskDate = new Date(`${taskDateYear}/${taskDateMonth}/${taskDateDay}`);
+                if (fixedTaskDate >= fixedTodaysDate && fixedTaskDate <= fixedTodaysDatePlusSevenDays) {
+                    createTaskDiv(task, project);
+                }
+            } else if (type === 'Important'){
+                if (task.priority === 'High'){
+                    createTaskDiv(task, project);
+                }
+            }
         }
     }
     mainHeader.appendChild(header);
+    mainHeader.appendChild(closeWindowBtn);
     mainSection.appendChild(mainHeader);
     mainSection.appendChild(mainBody);
     container.appendChild(mainSection);

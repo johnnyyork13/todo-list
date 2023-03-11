@@ -26,19 +26,23 @@ const projectList = [];
 
 const nextSevenDaysBtn = document.getElementById('nextSevenDaysBtn');
 nextSevenDaysBtn.addEventListener('click', function(){
-    
+    viewTasks(projectList, "Next Seven Day's")
 })
 
 const allTasksBtn = document.getElementById('allTasksBtn');
 allTasksBtn.addEventListener('click',function(){
-    viewTasks(projectList, 'all');
+    viewTasks(projectList, 'All');
 })
 
 const todayBtn = document.getElementById('todayBtn');
 todayBtn.addEventListener('click', function(){
-    
+    viewTasks(projectList, "Today's");
 })
 
+const importantBtn = document.getElementById('importantBtn');
+importantBtn.addEventListener('click', function(){
+    viewTasks(projectList, 'Important');
+})
 
 
 addProject.addEventListener('click', function(){
