@@ -133,10 +133,7 @@ function createForm(whatKind, formData){
     }
 }
 
-function setHeader(name) {
-    const header = document.getElementById('header');
-    header.textContent = name;
-}
+
 
 module.exports = {createForm,
     removeEverything,

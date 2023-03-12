@@ -159,15 +159,17 @@ function viewProject(newProject) {
         const taskDetails = document.createElement('p');
         const taskDate = document.createElement('p');
         const taskPriority = document.createElement('p');
+        const taskBtnDiv = document.createElement('div');
         const editTaskBtn = document.createElement('button');
         const deleteTaskBtn = document.createElement('button');
         taskTop.classList.add('taskTop');
         taskBottom.classList.add('taskBottom');
         taskDiv.classList.add('taskDiv');
-        taskName.textContent = `Task name: ${task.name}`;
-        taskDetails.textContent = `Task details: ${task.details}`;
-        taskDate.textContent = `Task date: ${task.date}`;
+        taskName.textContent = `${task.name}`;
+        taskDetails.textContent = `${task.details}`;
+        taskDate.textContent = `${task.date}`;
         taskPriority.textContent = `Task Priority: ${task.priority}`;
+        taskBtnDiv.id = 'taskBtnDiv';
         editTaskBtn.textContent = 'Edit';
         deleteTaskBtn.textContent = 'Delete';
         editTaskBtn.addEventListener('click', function(){
@@ -195,15 +197,18 @@ function viewProject(newProject) {
         taskBottom.appendChild(taskDetails);
         taskBottom.appendChild(taskDate);
         taskBottom.appendChild(taskPriority);
-        taskTop.appendChild(editTaskBtn);
-        taskTop.appendChild(deleteTaskBtn);
+        taskBtnDiv.appendChild(editTaskBtn);
+        taskBtnDiv.appendChild(deleteTaskBtn);
+        taskTop.appendChild(taskBtnDiv);
         taskDiv.appendChild(taskTop);
         taskDiv.appendChild(taskBottom);
         mainBody.appendChild(taskDiv);
         taskBottom.style.visibility = 'hidden';
         taskBottom.style.position = 'absolute';
+        taskTop.style.backgroundColor = 'var(--bg)';
         taskTop.addEventListener('click', function(){
             expandTask(this);
+            changeTaskTopColor(this);
         })
     }
     mainBody.appendChild(editProjectBtn);
@@ -240,6 +245,18 @@ function viewProject(newProject) {
             updateProjectInStorage(newProject.name, newProject);
         })
     })
+}
+
+function changeTaskTopColor(e){
+    if (e.style.backgroundColor === 'var(--bg)') {
+        e.style.backgroundColor = 'white';
+        e.children[1].children[0].style.backgroundColor = 'white';
+        e.children[1].children[1].style.backgroundColor = 'white';
+    } else if (e.style.backgroundColor === 'white') {
+        e.style.backgroundColor = 'var(--bg)';
+        e.children[1].children[0].style.backgroundColor = 'var(--bg)';
+        e.children[1].children[1].style.backgroundColor = 'var(--bg)';
+    }
 }
 
 function updateProjectList(newProject, oldProject){
@@ -298,9 +315,9 @@ function viewTasks(projectList, type){
         const taskDate = document.createElement('p');
         const taskPriority = document.createElement('p');
         projectName.textContent = `Project: ${project.name}`;
-        taskName.textContent = `Task: ${task.name}`;
-        taskDetails.textContent = `Task Details: ${task.details}`;
-        taskDate.textContent = `Task Date: ${task.date}`;
+        taskName.textContent = `${task.name}`;
+        taskDetails.textContent = `${task.details}`;
+        taskDate.textContent = `${task.date}`;
         taskPriority.textContent = `Task Priority: ${task.priority}`;
         taskTop.appendChild(projectName);
         taskTop.appendChild(taskName);
@@ -312,8 +329,10 @@ function viewTasks(projectList, type){
         mainBody.appendChild(taskDiv);
         taskBottom.style.visibility = 'hidden';
         taskBottom.style.position = 'absolute';
+        taskTop.style.backgroundColor = 'var(--bg)';
         taskTop.addEventListener('click', function(){
             expandTask(this);
+            changeTaskTopColor(this);
         })
         
     }
