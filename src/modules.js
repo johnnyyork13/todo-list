@@ -619,6 +619,7 @@ function exportData(projectList, type){
         return [objUrl, fileNameInput.value];
     } else if (type === 'print') {
         const table = document.createElement('table');
+        const caption = document.createElement('caption');
         const tHead = document.createElement('thead');
         const tBody = document.createElement('tbody');
  
@@ -642,6 +643,8 @@ function exportData(projectList, type){
             } 
             
         })
+        caption.textContent = fileNameInput.value;
+        table.appendChild(caption);
         table.appendChild(tHead);
         table.appendChild(tBody);
         localStorage.setItem('tableData', table.innerHTML);
