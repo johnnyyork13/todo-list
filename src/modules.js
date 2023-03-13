@@ -551,6 +551,17 @@ function exportDataAsExcel(projectList){
                 excelArray.push(newRow);
             }
         }
+    } else if (projectDrop.value === 'All Projects' && taskDrop.value !== 'All Tasks') {
+        for (let i = 0; i < projectList.length; i++) {
+            const project = projectList[i];
+            for (let x = 0; x < project.taskList.length; x++) {
+                const task = project.taskList[x];
+                if (task.name === taskDrop.value) {
+                    newRow = [project.name, project.details, task.name, task.details, task.date, task.priority];
+                    excelArray.push(newRow);
+                }
+            }
+        }
     } else {
         for (let i = 0; i < projectList.length; i++) {
             const project = projectList[i];
