@@ -109,6 +109,7 @@ function addProjectToProjectList(projectList, newProject){
         removeProjectFromStorage(newProject);
         removeProjectFromProjectList(newProject);
         removeEverything();
+        location.reload();
     })
 }
 
@@ -140,7 +141,9 @@ function viewProject(newProject) {
     const header = document.createElement('h2');
     const mainBody = document.createElement('div');
     const projectDetails = document.createElement('h3');
+    const projectBtnContainer = document.createElement('div');
     const editProjectBtn = document.createElement('button');
+    const doneBtn = document.createElement('button');
     const closeWindowBtn = document.createElement('button');
     const addNewTaskBtn = document.createElement('div');
     header.textContent = newProject.name;
@@ -150,6 +153,9 @@ function viewProject(newProject) {
     mainBody.id = 'mainBody';
     editProjectBtn.textContent = 'Edit Project';
     editProjectBtn.id = 'editProjectBtn';
+    doneBtn.id = 'doneBtn';
+    doneBtn.textContent = 'Done';
+    projectBtnContainer.id = 'projectBtnContainer';
     closeWindowBtn.textContent = 'X';
     closeWindowBtn.id = 'closeWindowBtn';
     addNewTaskBtn.innerHTML = '<p class="addNewTaskP">Add Task</p><p class="addNewTaskPlus">+</p>';
@@ -222,12 +228,17 @@ function viewProject(newProject) {
             changeTaskTopColor(this);
         })
     }
-    mainBody.appendChild(editProjectBtn);
+    projectBtnContainer.appendChild(editProjectBtn);
+    projectBtnContainer.appendChild(doneBtn);
+    mainBody.appendChild(projectBtnContainer);
     mainBody.appendChild(addNewTaskBtn);
     mainSection.appendChild(mainHeader);
     mainSection.appendChild(mainBody);
     container.appendChild(mainSection);
     closeWindowBtn.addEventListener('click', function(){
+        removeEverything();
+    })
+    doneBtn.addEventListener('click', function(){
         removeEverything();
     })
     editProjectBtn.addEventListener('click', function(){
@@ -456,6 +467,15 @@ function validateInputs(type) {
                 }
             }
             return true;
+        case 'export':
+            const fileNameInput = document.getElementById('fileNameInput');
+            if (fileNameInput.value === '') {
+                fileNameInput.style.border = '2px solid red';
+                return false;
+            } else {
+                fileNameInput.style.border = '2px solid var(--second)';
+                return true;
+            }
     }
 }
 

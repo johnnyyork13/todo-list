@@ -18,6 +18,7 @@ const {createExportForm} = require('./modules.js');
 const {populateExportForm} = require('./modules.js');
 const {exportDataAsExcel} = require('./modules.js');
 const {removeEverything} = require('./modules.js');
+const { validate } = require('schema-utils');
 
 const addProject = document.getElementById('addProject');
 const projectList = [];
@@ -59,13 +60,16 @@ exportBtn.addEventListener('click', function(){
     populateExportForm(projectList);
     const exportFormBtn = document.getElementById('exportFormBtn');
     exportFormBtn.addEventListener('click', function(){
-        const exportValues = exportDataAsExcel(projectList);
-        const objUrl = exportValues[0];
-        const fileName = exportValues[1];
-        exportFormBtn.setAttribute('href', objUrl);
-        exportFormBtn.setAttribute('download', `${fileName}.xls`);
-        removeEverything();
-        changeOverlay('light');
+        const validation = validateInputs('export');
+        if (validation) {
+            const exportValues = exportDataAsExcel(projectList);
+            const objUrl = exportValues[0];
+            const fileName = exportValues[1];
+            exportFormBtn.setAttribute('href', objUrl);
+            exportFormBtn.setAttribute('download', `${fileName}.xls`);
+            removeEverything();
+            changeOverlay('light');
+        }
     })
 })
 

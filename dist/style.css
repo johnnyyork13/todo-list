@@ -252,9 +252,6 @@ h2 {
     margin-top: 20px;
 }
 
-#editProjectBtn {
-    font-size: 1.5em;
-}
 #taskFormContainer select {
     margin-top: 15px;
 }
@@ -313,13 +310,20 @@ h2 {
     cursor: pointer;
 }
 
-#editProjectBtn {
-    font-size: 1em;
+#projectBtnContainer {
     position: absolute;
+    bottom: 20px;
+    width: 20%;
+    display: flex;
+    justify-content: space-around;
+}
+
+#editProjectBtn, #doneBtn {
+    font-size: 1em;
     bottom: 20px;
 }
 
-#editProjectBtn:hover {
+#editProjectBtn:hover, #doneBtn:hover {
     cursor: pointer;
     color: var(--second);
 }
