@@ -41,8 +41,13 @@ function takeValuesAndCreateProject(project){
 
 function showAddTaskToProjectPage(project){
     const mainBody = document.getElementById('mainBody');
+    const mainHeader = document.getElementById('mainHeader');
+    const closeWindowBtn = document.createElement('button');
     const header = document.getElementById('header');
     header.textContent = project.name;
+    closeWindowBtn.id = 'closeWindowBtn';
+    closeWindowBtn.textContent = 'X';
+    mainHeader.appendChild(closeWindowBtn);
     for (let i = 0; i < project.taskList.length; i++) {
         const task = project.taskList[i];
         const taskDiv = document.createElement('div');
@@ -65,7 +70,9 @@ function showAddTaskToProjectPage(project){
         removeEverything();
         addProjectToStorage(project);
     })
-
+    closeWindowBtn.addEventListener('click', function(){
+        removeEverything();
+    })
 }
 
 function takeValuesAndCreateTask(task){
@@ -143,7 +150,7 @@ function viewProject(newProject) {
     mainBody.id = 'mainBody';
     editProjectBtn.textContent = 'Edit Project';
     editProjectBtn.id = 'editProjectBtn';
-    closeWindowBtn.textContent = 'Close';
+    closeWindowBtn.textContent = 'X';
     closeWindowBtn.id = 'closeWindowBtn';
     addNewTaskBtn.textContent = '+';
     addNewTaskBtn.id = 'addNewTaskBtn';
@@ -175,11 +182,16 @@ function viewProject(newProject) {
         editTaskBtn.addEventListener('click', function(){
             createForm('task', task);
             closeTaskBtn(newProject);
+            changeOverlay('dark');
             const addTaskBtn = document.getElementById('addTaskBtn');
             addTaskBtn.addEventListener('click', function(){
-                takeValuesAndCreateTask(task);
-                viewProject(newProject);
-                updateProjectInStorage(newProject.name, newProject);
+                const validation = validateInputs('task');
+                if (validation) {
+                    changeOverlay('light');
+                    takeValuesAndCreateTask(task);
+                    viewProject(newProject);
+                    updateProjectInStorage(newProject.name, newProject);
+                }
             })
         })
         deleteTaskBtn.addEventListener('click', function(){
@@ -223,11 +235,14 @@ function viewProject(newProject) {
         createForm('project', newProject);
         const addProjectBtn = document.getElementById('addProjectBtn');
         addProjectBtn.addEventListener('click', function(){
-            const oldProject = newProject.name;
-            takeValuesAndCreateProject(newProject);
-            updateProjectList(newProject, oldProject);
-            updateProjectInStorage(oldProject, newProject);
-            viewProject(newProject);
+            const validation = validateInputs('project');
+            if (validation) {
+                const oldProject = newProject.name;
+                takeValuesAndCreateProject(newProject);
+                updateProjectList(newProject, oldProject);
+                updateProjectInStorage(oldProject, newProject);
+                viewProject(newProject);
+            }
         })
     })
     addNewTaskBtn.addEventListener('click', function(){
@@ -237,12 +252,16 @@ function viewProject(newProject) {
         closeTaskBtn(newProject);
         const addTaskBtn = document.getElementById('addTaskBtn');
         addTaskBtn.addEventListener('click', function(){
-            const newTask = new Task();
-            takeValuesAndCreateTask(newTask);
-            newProject.taskList.push(newTask);
-            viewProject(newProject);
-            changeOverlay('light');
-            updateProjectInStorage(newProject.name, newProject);
+            const validation = validateInputs('task');
+            if (validation) {
+                console.log('validated');
+                const newTask = new Task();
+                takeValuesAndCreateTask(newTask);
+                newProject.taskList.push(newTask);
+                viewProject(newProject);
+                changeOverlay('light');
+                updateProjectInStorage(newProject.name, newProject);
+            }
         })
     })
 }
@@ -250,12 +269,16 @@ function viewProject(newProject) {
 function changeTaskTopColor(e){
     if (e.style.backgroundColor === 'var(--bg)') {
         e.style.backgroundColor = 'white';
-        e.children[1].children[0].style.backgroundColor = 'white';
-        e.children[1].children[1].style.backgroundColor = 'white';
+        if (e.children[1].children[0] !== undefined) {
+            e.children[1].children[0].style.backgroundColor = 'white';
+            e.children[1].children[1].style.backgroundColor = 'white';
+        }
     } else if (e.style.backgroundColor === 'white') {
         e.style.backgroundColor = 'var(--bg)';
-        e.children[1].children[0].style.backgroundColor = 'var(--bg)';
-        e.children[1].children[1].style.backgroundColor = 'var(--bg)';
+        if (e.children[1].children[0] !== undefined) {
+            e.children[1].children[0].style.backgroundColor = 'var(--bg)';
+            e.children[1].children[1].style.backgroundColor = 'var(--bg)';
+        }
     }
 }
 
@@ -297,7 +320,7 @@ function viewTasks(projectList, type){
     mainHeader.id = 'mainHeader';
     header.textContent = `${type} Tasks`;
     closeWindowBtn.id = 'closeWindowBtn';
-    closeWindowBtn.textContent = 'Close';
+    closeWindowBtn.textContent = 'X';
     mainBody.id = 'mainBody';
     closeWindowBtn.addEventListener('click', function(){
         removeEverything();
@@ -357,7 +380,7 @@ function viewTasks(projectList, type){
                 if (task.date === todaysDate) {
                     createTaskDiv(task, project);
                 }
-            } else if (type === "Next Seven Day's") {
+            } else if (type === "Next 7 Day's") {
                 //build todays date in UTC
                 const todaysDate = new Date();
                 const todaysDay = todaysDate.getDate();
@@ -404,6 +427,40 @@ function setHeader(name) {
     header.textContent = name;
 }
 
+function validateInputs(type) {
+    switch (type) {
+        case 'project':
+            const projectNameInput = document.getElementById('projectNameInput');
+            const projectDetailsInput = document.getElementById('projectDetailsInput');
+            const projectInputList = [projectNameInput, projectDetailsInput];
+            for (let i = 0; i < projectInputList.length; i++) {
+                let e = projectInputList[i];
+                if (e.value === '') {
+                    e.style.border = '2px solid red';
+                    return false;
+                } else {
+                    e.style.border = '2px solid var(--second)';
+                }
+            }
+            return true;
+        case 'task':
+            const taskNameInput = document.getElementById('taskNameInput');
+            const taskDetailsInput = document.getElementById('taskDetailsInput');
+            const taskInputList = [taskNameInput, taskDetailsInput];
+            for (let i = 0; i < taskInputList.length; i++) {
+                const t = taskInputList[i];
+                if (t.value === '') {
+                    t.style.border = '2px solid red';
+                    return false;
+                } else {
+                    t.style.border = '2px solid var(--second)';
+                }
+            }
+            return true;
+    }
+}
+
+
 module.exports = {
     takeValuesAndCreateProject,
     removeMainBodyContent,
@@ -416,4 +473,5 @@ module.exports = {
     viewTasks,
     setHeader,
     addProjectToStorage,
-    updateProjectInStorage}
+    updateProjectInStorage,
+    validateInputs}

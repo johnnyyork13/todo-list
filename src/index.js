@@ -10,7 +10,7 @@ const {changeOverlay} = require('./modules.js');
 const {viewTasks} = require('./modules.js');
 const {setHeader} = require('./modules.js');
 const {addProjectToStorage} = require('./modules.js');
-const {updateProjectInStorage} = require('./modules.js');
+const {validateInputs} = require('./modules.js');
 
 const addProject = document.getElementById('addProject');
 const projectList = [];
@@ -26,7 +26,7 @@ const projectList = [];
 
 const nextSevenDaysBtn = document.getElementById('nextSevenDaysBtn');
 nextSevenDaysBtn.addEventListener('click', function(){
-    viewTasks(projectList, "Next Seven Day's")
+    viewTasks(projectList, "Next 7 Day's")
 })
 
 const allTasksBtn = document.getElementById('allTasksBtn');
@@ -44,18 +44,20 @@ importantBtn.addEventListener('click', function(){
     viewTasks(projectList, 'Important');
 })
 
-
 addProject.addEventListener('click', function(){
     createForm('project', '');
     const addProjectBtn = document.getElementById('addProjectBtn');
     addProjectBtn.addEventListener('click', function(){
-        const newProject = new Project();
-        takeValuesAndCreateProject(newProject);
-        addProjectToProjectList(projectList, newProject);
-        removeMainBodyContent();
-        showAddTaskToProjectPage(newProject);
-        addTaskToProject(newProject);
-        addProjectToStorage(newProject);
+        const validation = validateInputs('project');
+        if (validation) {
+            const newProject = new Project();
+            takeValuesAndCreateProject(newProject);
+            addProjectToProjectList(projectList, newProject);
+            removeMainBodyContent();
+            showAddTaskToProjectPage(newProject);
+            addTaskToProject(newProject);
+            addProjectToStorage(newProject);
+        }
     })
 })
 
@@ -74,14 +76,17 @@ function addTaskToProject(project){
         })
         const addTaskBtn = document.getElementById('addTaskBtn');
         addTaskBtn.addEventListener('click', function(){
-            const newTask = new Task();
-            takeValuesAndCreateTask(newTask);
-            project.taskList.push(newTask);
-            removeMainBodyContent();
-            showAddTaskToProjectPage(project);
-            addTaskToProject(project);
-            changeOverlay('light');
-            addProjectToStorage(project);
+            const validation = validateInputs('task');
+            if (validation) {
+                const newTask = new Task();
+                takeValuesAndCreateTask(newTask);
+                project.taskList.push(newTask);
+                removeMainBodyContent();
+                showAddTaskToProjectPage(project);
+                addTaskToProject(project);
+                changeOverlay('light');
+                addProjectToStorage(project);
+            }
         })
     })
 }

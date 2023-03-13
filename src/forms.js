@@ -48,7 +48,7 @@ function createForm(whatKind, formData){
         projectDetailsInput.placeholder = 'Enter Project Details';
         addProjectBtn.id = 'addProjectBtn';
         addProjectBtn.textContent = 'Create Project';
-        closeWindowBtn.textContent = 'Close';
+        closeWindowBtn.textContent = 'X';
         closeWindowBtn.id = 'closeWindowBtn';
         checkData(whatKind, formData, [projectNameInput, projectDetailsInput]);
         appendElements(false, [projectNameInput, projectDetailsInput], addProjectBtn, closeWindowBtn)
@@ -64,7 +64,7 @@ function createForm(whatKind, formData){
         const medium = document.createElement('option');
         const high = document.createElement('option');
         const addTaskBtn = document.createElement('button');
-        closeTaskBtn.textContent = 'Close';
+        closeTaskBtn.textContent = 'X';
         closeTaskBtn.id = 'closeTaskBtn';
         taskDateInput.type = 'date';
         taskPriorityInput.appendChild(low);
@@ -75,6 +75,7 @@ function createForm(whatKind, formData){
         taskDetailsInput.id = 'taskDetailsInput';
         taskDetailsInput.placeholder = 'Enter Task Details';
         taskDateInput.id = 'taskDateInput';
+        taskDateInput.valueAsDate = new Date();
         taskDateLabel.textContent = 'Task Due';
         taskPriorityInput.id = 'taskPriorityInput';
         taskPriorityLabel.textContent = 'Task Priority';
@@ -131,6 +132,7 @@ function createForm(whatKind, formData){
         mainSection.appendChild(mainBody);
         container.appendChild(mainSection);
     }
+
 }
 
 
