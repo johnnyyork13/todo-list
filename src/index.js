@@ -60,7 +60,7 @@ exportBtn.addEventListener('click', function(){
     const exportFormBtn = document.getElementById('exportFormBtn');
     exportFormBtn.addEventListener('click', function(){
         const exportValues = exportDataAsExcel(projectList);
-        const objectUrl = exportValues[0];
+        const objUrl = exportValues[0];
         const fileName = exportValues[1];
         exportFormBtn.setAttribute('href', objUrl);
         exportFormBtn.setAttribute('download', `${fileName}.xls`);
