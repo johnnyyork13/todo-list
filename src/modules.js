@@ -142,7 +142,7 @@ function viewProject(newProject) {
     const projectDetails = document.createElement('h3');
     const editProjectBtn = document.createElement('button');
     const closeWindowBtn = document.createElement('button');
-    const addNewTaskBtn = document.createElement('button');
+    const addNewTaskBtn = document.createElement('div');
     header.textContent = newProject.name;
     projectDetails.textContent = newProject.details;
     mainSection.id = 'mainSection';
@@ -152,7 +152,7 @@ function viewProject(newProject) {
     editProjectBtn.id = 'editProjectBtn';
     closeWindowBtn.textContent = 'X';
     closeWindowBtn.id = 'closeWindowBtn';
-    addNewTaskBtn.textContent = '+';
+    addNewTaskBtn.innerHTML = '<p class="addNewTaskP">Add Task</p><p class="addNewTaskPlus">+</p>';
     addNewTaskBtn.id = 'addNewTaskBtn';
     mainHeader.appendChild(header);
     mainHeader.appendChild(closeWindowBtn);
@@ -199,7 +199,6 @@ function viewProject(newProject) {
                 const t = newProject.taskList[i];
                 if (t.name === task.name) {
                     newProject.taskList.splice(i, 1);
-                    console.log('clicked');
                     updateProjectInStorage(newProject.name, newProject);
                 }
             }
@@ -254,7 +253,6 @@ function viewProject(newProject) {
         addTaskBtn.addEventListener('click', function(){
             const validation = validateInputs('task');
             if (validation) {
-                console.log('validated');
                 const newTask = new Task();
                 takeValuesAndCreateTask(newTask);
                 newProject.taskList.push(newTask);
@@ -288,6 +286,7 @@ function updateProjectList(newProject, oldProject){
         const e = projectUl.children[i].children[0];
         if (`${oldProject}-project` === e.id) {
             e.textContent = newProject.name;
+            e.id = `${newProject.name}-project`;
         }
     }
 }
@@ -460,6 +459,166 @@ function validateInputs(type) {
     }
 }
 
+function createExportForm() {
+    removeEverything();
+    const container = document.getElementById('container');
+    const exportFormHeader = document.createElement('h2');
+    const closeExportFormBtn = document.createElement('button');
+    const exportFormDiv = document.createElement('div');
+    const fileNameLabel = document.createElement('label');
+    const fileNameInput = document.createElement('input');
+    const projectDropLabel = document.createElement('label');
+    const projectDrop = document.createElement('select');
+    const allProjectsOption = document.createElement('option');
+    const taskDropLabel = document.createElement('label');
+    const taskDrop = document.createElement('select');
+    const allTasksOption = document.createElement('option');
+    const exportFormBtn = document.createElement('a');
+    exportFormHeader.textContent = 'Export Data';
+    closeExportFormBtn.id = 'closeExportFormBtn';
+    closeExportFormBtn.textContent = 'X';
+    exportFormDiv.id = 'exportFormDiv';
+    fileNameLabel.classList.add('exportFormLabel');
+    fileNameLabel.textContent = 'File Name';
+    fileNameInput.classList.add('exportFormDrop');
+    fileNameInput.id = 'fileNameInput';
+    fileNameInput.placeholder = 'Enter File Name';
+    projectDropLabel.classList.add('exportFormLabel');
+    projectDropLabel.textContent = 'Select Project';
+    projectDrop.id = 'projectDrop';
+    projectDrop.classList.add('exportFormDrop');
+    allProjectsOption.textContent = 'All Projects';
+    taskDropLabel.classList.add('exportFormLabel');
+    taskDropLabel.textContent = 'Select Task';
+    taskDrop.id = 'taskDrop';
+    taskDrop.classList.add('exportFormDrop');
+    allTasksOption.text = 'All Tasks';
+    exportFormBtn.id = 'exportFormBtn';
+    exportFormBtn.textContent = 'Export Data';
+    exportFormDiv.appendChild(exportFormHeader);
+    exportFormDiv.appendChild(closeExportFormBtn);
+    exportFormDiv.appendChild(fileNameLabel);
+    exportFormDiv.appendChild(fileNameInput);
+    exportFormDiv.appendChild(projectDropLabel);
+    projectDrop.appendChild(allProjectsOption);
+    exportFormDiv.appendChild(projectDrop);
+    exportFormDiv.appendChild(taskDropLabel);
+    taskDrop.appendChild(allTasksOption);
+    exportFormDiv.appendChild(taskDrop);
+    exportFormDiv.appendChild(exportFormBtn);
+    container.appendChild(exportFormDiv);
+    closeExportFormBtn.addEventListener('click', function(){
+        changeOverlay('light');
+        removeEverything();
+    })
+
+}
+
+function populateExportForm(projectList){
+    const projectDrop = document.getElementById('projectDrop');
+    const taskDrop = document.getElementById('taskDrop');
+
+    for (let i = 0; i < projectList.length; i++) {
+        const project = projectList[i];
+        const projectOption = document.createElement('option');
+        projectOption.textContent = project.name;
+        projectDrop.appendChild(projectOption);
+        for (let x = 0; x < project.taskList.length; x++) {
+            const task = project.taskList[x];
+            const taskOption = document.createElement('option');
+            taskOption.textContent = task.name;
+            taskDrop.appendChild(taskOption);
+        }
+    }
+
+    projectDrop.addEventListener('change', function() {
+        updateTaskDropDownValues(projectDrop, taskDrop, projectList);
+    })
+}
+
+function exportDataAsExcel(projectList){
+    const fileNameInput = document.getElementById('fileNameInput');
+    const projectDrop = document.getElementById('projectDrop');
+    const taskDrop = document.getElementById('taskDrop');
+    const excelArray = [['Project Name', 'Project Details', 'Task Name', 'Task Details', 'Task Due', 'Task Priority']];
+    let newRow = [];
+    if (projectDrop.value === 'All Projects' && taskDrop.value === 'All Tasks') {
+        for (let i = 0; i < projectList.length; i++) {
+            const project = projectList[i];
+            for (let x = 0; x < project.taskList.length; x++) {
+                const task = project.taskList[x];
+                newRow = [project.name, project.details, task.name, task.details, task.date, task.priority];
+                excelArray.push(newRow);
+            }
+        }
+    } else {
+        for (let i = 0; i < projectList.length; i++) {
+            const project = projectList[i];
+            if (project.name === projectDrop.value && taskDrop.value === 'All Tasks') {
+                for (let x = 0; x < project.taskList.length; x++) {
+                    const task = project.taskList[x];
+                    newRow = [project.name, project.details, task.name, task.details, task.date, task.priority];
+                    excelArray.push(newRow);
+                }
+            } else if (project.name === projectDrop.value && taskDrop.value !== 'All Tasks') {
+                for (let x = 0; x < project.taskList.length; x++) {
+                    const task = project.taskList[x];
+                    if (task.name === taskDrop.value) {
+                        newRow = [project.name, project.details, task.name, task.details, task.date, task.priority];
+                        excelArray.push(newRow);
+                    }
+                }
+            }
+        }
+    }
+
+
+    let refinedArray = '';
+    excelArray.forEach((e) => {
+        refinedArray += e.join(',') + '\n';
+    })
+
+    const blob = new Blob([refinedArray], {type: 'text/csv;charset=utf-8,'});
+    const objUrl = URL.createObjectURL(blob);
+
+    return objUrl;
+}
+
+function updateTaskDropDownValues(projectDrop, taskDrop, projectList) {
+    if (projectDrop.value === 'All Projects') {
+        removeChildren(taskDrop);
+        for (let i = 0; i < projectList.length; i++) {
+            const project = projectList[i];
+            for (let x = 0; x < project.taskList.length; x++) {
+                const task = project.taskList[x];
+                const taskOption = document.createElement('option');
+                taskOption.textContent = task.name;
+                taskDrop.appendChild(taskOption);
+            }
+        }
+    } else {
+        for (let i = 0; i < projectList.length; i++) {
+            const project = projectList[i];
+            if (project.name === projectDrop.value) {
+                removeChildren(taskDrop); 
+                for (let x = 0; x < project.taskList.length; x++) {
+                    const task = project.taskList[x];
+                    const taskOption = document.createElement('option');
+                    taskOption.textContent = task.name;
+                    taskDrop.appendChild(taskOption);
+                }
+            }
+        }
+    }
+}
+
+function removeChildren(e) {
+    for (let i = e.children.length - 1; i >= 1; i--) {
+        const element = e.children[i];
+        //console.log(element);
+        element.remove();
+    }
+}
 
 module.exports = {
     takeValuesAndCreateProject,
@@ -474,4 +633,9 @@ module.exports = {
     setHeader,
     addProjectToStorage,
     updateProjectInStorage,
-    validateInputs}
+    validateInputs,
+    updateProjectList,
+    createExportForm,
+    populateExportForm,
+    exportDataAsExcel,
+    removeEverything}

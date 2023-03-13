@@ -43,9 +43,11 @@ function createForm(whatKind, formData){
         const addProjectBtn = document.createElement('button');
         const closeWindowBtn = document.createElement('button');
         projectNameInput.id = 'projectNameInput';
+        projectNameInput.maxLength = '25';
         projectDetailsInput.id = 'projectDetailsInput';
-        projectNameInput.placeholder = 'Enter Project Name';
-        projectDetailsInput.placeholder = 'Enter Project Details';
+        projectDetailsInput.maxLength = '80';
+        projectNameInput.placeholder = 'Enter Project Name (Max Length - 25 Characters)';
+        projectDetailsInput.placeholder = 'Enter Project Details (Max Length - 80 Characters)';
         addProjectBtn.id = 'addProjectBtn';
         addProjectBtn.textContent = 'Create Project';
         closeWindowBtn.textContent = 'X';
@@ -84,10 +86,10 @@ function createForm(whatKind, formData){
         high.textContent = 'High';
         addTaskBtn.id = 'addTaskBtn';
         addTaskBtn.textContent = 'Add Task';
-        checkData(whatKind, formData, [taskNameInput, taskDetailsInput, taskDateInput, taskPriorityInput])
-        appendElements(true, [taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn, closeTaskBtn)
+        checkData(whatKind, formData, [taskNameInput, taskDetailsInput, taskDateInput, taskPriorityInput]);
+        appendElements(true, [taskNameInput, taskDetailsInput, taskDateLabel, taskDateInput, taskPriorityLabel, taskPriorityInput], addTaskBtn, closeTaskBtn);
     }
-    //check if there is any data
+        //check if there is any data
     function checkData(whatKind, formData, inputList){
         if (formData !== '') {
             if (whatKind === 'project') {

@@ -55,6 +55,10 @@ main {
     display: flex;
 }
 
+#container {
+    position: relative;
+}
+
 aside {
     width: 20%;
     height: 100%;
@@ -79,6 +83,13 @@ aside li {
     font-weight: bold;
 }
 
+.projectDiv {
+    max-height: 30%;
+    padding-bottom: 20px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
 #projectUl li {
     display: flex;
     align-items: center;
@@ -97,7 +108,7 @@ aside li {
 }
 
 #projectUl button:hover {
-    color: var(--main);
+    color: var(--bg);
     cursor: pointer;
 }
 
@@ -197,7 +208,7 @@ h2 {
 
 #mainBody h3 {
     color: var(--text);
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 #mainBody button {
@@ -287,6 +298,14 @@ h2 {
 
 #addNewTaskBtn {
     font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.addNewTaskP {
+    font-size: .5em;
+    margin-right: 5px;
 }
 
 #addNewTaskBtn:hover {
@@ -305,8 +324,66 @@ h2 {
     color: var(--second);
 }
 
+#exportFormDiv {
+    width: 80%;
+    height: 80%;
+    background-color: var(--bg);
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.exportFormLabel {
+    margin-top: 20px;
+}
+
+.exportFormDrop {
+    width: 60%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#exportFormBtn {
+    position: absolute;
+    bottom: 20px;
+    background-color: var(--bg);
+    border: none;
+    font-size: 1.1em;
+}
+
+#exportFormBtn:hover {
+    cursor:pointer;
+    color: var(--second);
+}
+
+#closeExportFormBtn {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    border: none;
+    background-color: var(--bg);
+    font-size: 1.3em;
+}
+
+#closeExportFormBtn:hover {
+    cursor: pointer;
+    color: var(--second);
+}
+
+
+
 footer {
     width: 100%;
     height: 5%;
-    background-color: var(--main);
+    background-color: var(--third);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+}
+
+footer a {
+    color: var(--bg);
 }

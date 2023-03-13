@@ -11,6 +11,13 @@ const {viewTasks} = require('./modules.js');
 const {setHeader} = require('./modules.js');
 const {addProjectToStorage} = require('./modules.js');
 const {validateInputs} = require('./modules.js');
+const {updateProjectList} = require('./modules.js');
+const {updateProjectInStorage} = require('./modules.js');
+const {viewProject} = require('./modules.js');
+const {createExportForm} = require('./modules.js');
+const {populateExportForm} = require('./modules.js');
+const {exportDataAsExcel} = require('./modules.js');
+const {removeEverything} = require('./modules.js');
 
 const addProject = document.getElementById('addProject');
 const projectList = [];
@@ -44,6 +51,22 @@ importantBtn.addEventListener('click', function(){
     viewTasks(projectList, 'Important');
 })
 
+//export data
+const exportBtn = document.getElementById('exportBtn');
+exportBtn.addEventListener('click', function(){
+    changeOverlay('dark');
+    createExportForm();
+    populateExportForm(projectList);
+    const exportFormBtn = document.getElementById('exportFormBtn');
+    exportFormBtn.addEventListener('click', function(){
+        const objUrl = exportDataAsExcel(projectList);
+        exportFormBtn.setAttribute('href', objUrl);
+        exportFormBtn.setAttribute('download', `test.csv`);
+        removeEverything();
+        changeOverlay('light');
+    })
+})
+
 addProject.addEventListener('click', function(){
     createForm('project', '');
     const addProjectBtn = document.getElementById('addProjectBtn');
@@ -52,11 +75,23 @@ addProject.addEventListener('click', function(){
         if (validation) {
             const newProject = new Project();
             takeValuesAndCreateProject(newProject);
+            addProjectToStorage(newProject);
+            addProjectToProjectList(projectList, newProject);
+            viewProject(newProject);
+
+            /*
+            takeValuesAndCreateProject(newProject);
             addProjectToProjectList(projectList, newProject);
             removeMainBodyContent();
             showAddTaskToProjectPage(newProject);
             addTaskToProject(newProject);
             addProjectToStorage(newProject);
+            */
+
+            /*
+            updateProjectInStorage(newProject, newProject);
+            updateProjectList(newProject, newProject);
+            */
         }
     })
 })
@@ -90,6 +125,9 @@ function addTaskToProject(project){
         })
     })
 }
+
+
+
 
 module.exports = {addTaskToProject};
 
