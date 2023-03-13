@@ -58,7 +58,7 @@ importantBtn.addEventListener('click', function(){
 const exportBtn = document.getElementById('exportBtn');
 exportBtn.addEventListener('click', function(){
     changeOverlay('dark');
-    createExportForm();
+    createExportForm('excel');
     populateExportForm(projectList);
     const exportFormBtn = document.getElementById('exportFormBtn');
     exportFormBtn.addEventListener('click', function(){
@@ -79,7 +79,7 @@ exportBtn.addEventListener('click', function(){
 const tableBtn = document.getElementById('tableBtn');
 tableBtn.addEventListener('click', function(){
     changeOverlay('dark');
-    createExportForm();
+    createExportForm('print');
     populateExportForm(projectList);
     const exportFormBtn = document.getElementById('exportFormBtn');
     exportFormBtn.addEventListener('click', function(){

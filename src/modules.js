@@ -479,7 +479,7 @@ function validateInputs(type) {
     }
 }
 
-function createExportForm() {
+function createExportForm(type) {
     removeEverything();
     const container = document.getElementById('container');
     const exportFormHeader = document.createElement('h2');
@@ -494,7 +494,7 @@ function createExportForm() {
     const taskDrop = document.createElement('select');
     const allTasksOption = document.createElement('option');
     const exportFormBtn = document.createElement('a');
-    exportFormHeader.textContent = 'Export Data';
+    exportFormHeader.id = 'exportFormHeader';
     closeExportFormBtn.id = 'closeExportFormBtn';
     closeExportFormBtn.textContent = 'X';
     exportFormDiv.id = 'exportFormDiv';
@@ -531,7 +531,11 @@ function createExportForm() {
         changeOverlay('light');
         removeEverything();
     })
-
+    if (type === 'excel') {
+        exportFormHeader.textContent = 'Export as Excel Spreadsheet';
+    } else if (type === 'print') {
+        exportFormHeader.textContent = 'Print Document';
+    }
 }
 
 function populateExportForm(projectList){
