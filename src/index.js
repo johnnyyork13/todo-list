@@ -59,9 +59,11 @@ exportBtn.addEventListener('click', function(){
     populateExportForm(projectList);
     const exportFormBtn = document.getElementById('exportFormBtn');
     exportFormBtn.addEventListener('click', function(){
-        const objUrl = exportDataAsExcel(projectList);
+        const exportValues = exportDataAsExcel(projectList);
+        const objectUrl = exportValues[0];
+        const fileName = exportValues[1];
         exportFormBtn.setAttribute('href', objUrl);
-        exportFormBtn.setAttribute('download', `test.csv`);
+        exportFormBtn.setAttribute('download', `${fileName}.xls`);
         removeEverything();
         changeOverlay('light');
     })

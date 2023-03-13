@@ -581,7 +581,7 @@ function exportDataAsExcel(projectList){
     const blob = new Blob([refinedArray], {type: 'text/csv;charset=utf-8,'});
     const objUrl = URL.createObjectURL(blob);
 
-    return objUrl;
+    return [objUrl, fileNameInput.value];
 }
 
 function updateTaskDropDownValues(projectDrop, taskDrop, projectList) {
