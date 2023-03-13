@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="print.css">
+    <title>Print Table</title>
+</head>
+<body>
+    <table id="table"></table>
+
+    <script>
+        (() => {
+            const table = document.getElementById('table');
+            const tableData = localStorage.getItem('tableData');
+            table.innerHTML = tableData;
+            localStorage.removeItem('tableData');
+        })();
+    </script>
+</body>
+</html>
