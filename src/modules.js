@@ -556,7 +556,7 @@ function populateExportForm(projectList){
     })
 }
 
-function exportDataAsExcel(projectList){
+function exportData(projectList, type){
     const fileNameInput = document.getElementById('fileNameInput');
     const projectDrop = document.getElementById('projectDrop');
     const taskDrop = document.getElementById('taskDrop');
@@ -603,16 +603,46 @@ function exportDataAsExcel(projectList){
         }
     }
 
-
-    let refinedArray = '';
-    excelArray.forEach((e) => {
-        refinedArray += e.join(',') + '\n';
-    })
-
-    const blob = new Blob([refinedArray], {type: 'text/csv;charset=utf-8,'});
-    const objUrl = URL.createObjectURL(blob);
-
-    return [objUrl, fileNameInput.value];
+    if (type === 'excel') {
+        let refinedArray = '';
+        excelArray.forEach((e) => {
+            refinedArray += e.join(',') + '\n';
+        })
+    
+        const blob = new Blob([refinedArray], {type: 'text/csv;charset=utf-8,'});
+        const objUrl = URL.createObjectURL(blob);
+    
+        return [objUrl, fileNameInput.value];
+    } else if (type === 'print') {
+        const table = document.createElement('table');
+        const tHead = document.createElement('thead');
+        const tBody = document.createElement('tbody');
+ 
+        excelArray.forEach((array) => {
+            const tr = document.createElement('tr');
+            array.forEach((e) => {
+                if (array[0] === 'Project Name') {
+                    const td = document.createElement('td');
+                    td.textContent = e;
+                    tr.appendChild(td);
+                } else {
+                    const td = document.createElement('td');
+                    td.textContent = e;
+                    tr.appendChild(td);
+                }
+            })   
+            if (array[0] === 'Project Name') {
+                tHead.appendChild(tr);
+            } else {
+                tBody.appendChild(tr);
+            } 
+            
+        })
+        table.appendChild(tHead);
+        table.appendChild(tBody);
+        localStorage.setItem('tableData', table.innerHTML);
+    }
+    
 }
 
 function updateTaskDropDownValues(projectDrop, taskDrop, projectList) {
@@ -668,5 +698,5 @@ module.exports = {
     updateProjectList,
     createExportForm,
     populateExportForm,
-    exportDataAsExcel,
+    exportData,
     removeEverything}

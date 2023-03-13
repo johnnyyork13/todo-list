@@ -16,7 +16,7 @@ const {updateProjectInStorage} = require('./modules.js');
 const {viewProject} = require('./modules.js');
 const {createExportForm} = require('./modules.js');
 const {populateExportForm} = require('./modules.js');
-const {exportDataAsExcel} = require('./modules.js');
+const {exportData} = require('./modules.js');
 const {removeEverything} = require('./modules.js');
 const { validate } = require('schema-utils');
 
@@ -26,8 +26,10 @@ const projectList = [];
 (() => {
     const projectsInStorage = {...localStorage};
     for (let key in projectsInStorage) {
-        const project = JSON.parse(localStorage.getItem(key));
-        addProjectToProjectList(projectList, project);
+        if (key !== 'tableData') {
+            const project = JSON.parse(localStorage.getItem(key));
+            addProjectToProjectList(projectList, project);
+        }
     }
 })();
 
@@ -52,7 +54,7 @@ importantBtn.addEventListener('click', function(){
     viewTasks(projectList, 'Important');
 })
 
-//export data
+//export data to excel
 const exportBtn = document.getElementById('exportBtn');
 exportBtn.addEventListener('click', function(){
     changeOverlay('dark');
@@ -62,13 +64,30 @@ exportBtn.addEventListener('click', function(){
     exportFormBtn.addEventListener('click', function(){
         const validation = validateInputs('export');
         if (validation) {
-            const exportValues = exportDataAsExcel(projectList);
+            const exportValues = exportData(projectList, 'excel');
             const objUrl = exportValues[0];
             const fileName = exportValues[1];
             exportFormBtn.setAttribute('href', objUrl);
             exportFormBtn.setAttribute('download', `${fileName}.xls`);
             removeEverything();
             changeOverlay('light');
+        }
+    })
+})
+
+//export data to table in new page
+const tableBtn = document.getElementById('tableBtn');
+tableBtn.addEventListener('click', function(){
+    changeOverlay('dark');
+    createExportForm();
+    populateExportForm(projectList);
+    const exportFormBtn = document.getElementById('exportFormBtn');
+    exportFormBtn.addEventListener('click', function(){
+        const validation = validateInputs('export');
+        if (validation) {
+            exportData(projectList, 'print')
+            changeOverlay('light');
+            window.open('print.html');
         }
     })
 })
