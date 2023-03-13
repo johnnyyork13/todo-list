@@ -169,6 +169,10 @@ h2 {
     cursor: pointer;
 }
 
+#finishedAddingTasksBtn {
+    margin-top: 20px;
+}
+
 #mainBody {
     width: 100%;
     height: 85%;
